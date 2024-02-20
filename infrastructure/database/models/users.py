@@ -34,8 +34,9 @@ class User(Base, TimestampMixin, TableNameMixin):
     user_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=False)
     username: Mapped[Optional[str]] = mapped_column(String(128))
     full_name: Mapped[str] = mapped_column(String(128))
-    active: Mapped[bool] = mapped_column(Boolean, server_default=true())
-    language: Mapped[str] = mapped_column(String(10), server_default=text("'en'"))
+    language_code: Mapped[str] = mapped_column(String(10), server_default=text("'en'"))
+    is_bot: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    is_premium: Mapped[Optional[bool]] = mapped_column(Boolean)
 
     def __repr__(self):
         return f"<User {self.user_id} {self.username} {self.full_name}>"

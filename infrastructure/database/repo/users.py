@@ -1,6 +1,5 @@
 from typing import Optional
 
-from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from infrastructure.database.models import User
@@ -12,7 +11,9 @@ class UserRepo(BaseRepo):
         self,
         user_id: int,
         full_name: str,
-        language: str,
+        language_code: str,
+        is_bot: bool,
+        is_premium: bool,
         username: Optional[str] = None,
     ):
         """
@@ -30,7 +31,9 @@ class UserRepo(BaseRepo):
                 user_id=user_id,
                 username=username,
                 full_name=full_name,
-                language=language,
+                language_code=language_code,
+                is_bot=is_bot,
+                is_premium=is_premium,
             )
             .on_conflict_do_update(
                 index_elements=[User.user_id],

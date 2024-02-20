@@ -18,12 +18,15 @@ class DatabaseMiddleware(BaseMiddleware):
     ) -> Any:
         async with self.session_pool() as session:
             repo = RequestsRepo(session)
+            is_premium = False if event.from_user.is_premium is None else True
 
             user = await repo.users.get_or_create_user(
                 event.from_user.id,
                 event.from_user.full_name,
                 event.from_user.language_code,
-                event.from_user.username
+                event.from_user.is_bot,
+                is_premium,
+                event.from_user.username,
             )
 
             data["session"] = session
