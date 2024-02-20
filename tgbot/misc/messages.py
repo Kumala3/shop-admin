@@ -26,3 +26,7 @@ class Messages:
         text = f"""{bold("Пожалуйста, напишите в произвольной форме где вы нашли ошибку и по возможности сделайте скриншот в виде ссылки.")}"""
 
         return text.replace("\\", "")
+
+    def confirm_payment(chosen_software: str):
+        text = f"""Вы выбрали перевод для {bold(chosen_software)}. Для оплаты нажмите кнопку «Оплатить»"""
+        return text.replace("\\", "")
