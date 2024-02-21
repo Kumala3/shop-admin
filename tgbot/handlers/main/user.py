@@ -16,7 +16,7 @@ user_router = Router()
 
 @user_router.message(CommandStart())
 async def user_start(message: Message):
-    await message.reply(
+    await message.answer(
         text="Приветствую в нашем боте!", reply_markup=UserKeyboards.menu_keyboard()
     )
 
@@ -48,7 +48,7 @@ async def pay_order(query: CallbackQuery, state: FSMContext):
 @user_router.callback_query(SoftwareChoice.software, F.data == "back_to_pay")
 async def back_to_pay(query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    chosen_software = data.get("chosen_software")
+    chosen_software = data.get("software")
 
     await query.message.edit_text(
         text=UserMessages.confirm_payment(chosen_software),
@@ -60,7 +60,7 @@ async def back_to_pay(query: CallbackQuery, state: FSMContext):
 @user_router.callback_query(F.data == "pay_order")
 async def choose_payment(query: CallbackQuery):
     await query.message.edit_text(
-        text="Приветствую в нашем боте!", reply_markup=UserKeyboards.payments_keyboard()
+        text="Выберите способ оплаты:", reply_markup=UserKeyboards.payments_keyboard()
     )
 
 
@@ -76,7 +76,7 @@ async def back_pay_order(query: CallbackQuery):
 @user_router.callback_query(F.data == "back_software_chs")
 async def back_software_chs(query: CallbackQuery):
     await query.message.edit_text(
-        text="Вітаю, звичайний користувач!", reply_markup=UserKeyboards.menu_keyboard()
+        text="Приветствую в нашем боте!", reply_markup=UserKeyboards.menu_keyboard()
     )
 
 
