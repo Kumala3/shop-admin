@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure.database.repo.users import UserRepo
-from infrastructure.database.setup import create_engine
+from infrastructure.database.repo.errors import ErrorRepo
 
 
 @dataclass
@@ -22,3 +22,10 @@ class RequestsRepo:
         The User repository sessions are required to manage user operations.
         """
         return UserRepo(self.session)
+
+    @property
+    def errors(self) -> ErrorRepo:
+        """
+        The Error repository sessions are required to manage error operations.
+        """
+        return ErrorRepo(self.session)
