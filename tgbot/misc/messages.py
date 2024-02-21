@@ -1,7 +1,7 @@
 from aiogram.utils.markdown import bold
 
 
-class Messages:
+class UserMessages:
     def buy_translate_text():
         text = f"""{bold("ВАЖНО! Переводы работают только для платформы WINDOWS!")}
 
@@ -37,3 +37,9 @@ class Messages:
 
     def confirm_request():
         return "Спасибо за обращение! Оно будет рассмотрено в ближайшее время."
+
+
+class AdminMessages:
+    def greet_admin():
+        text = f"""{bold("Приветствую Админ! Выберете действие:")}"""
+        return text.replace("\\", "")
