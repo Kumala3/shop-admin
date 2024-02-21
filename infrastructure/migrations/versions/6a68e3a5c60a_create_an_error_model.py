@@ -30,7 +30,6 @@ def upgrade() -> None:
         sa.Column("software", sa.String()),
         sa.ForeignKeyConstraint(["user_id"], ["users.user_id"]),
         sa.PrimaryKeyConstraint("error_id"),
-        sa.UniqueConstraint("username")
     )
     # ### end Alembic commands ###
 
