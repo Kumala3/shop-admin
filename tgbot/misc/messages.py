@@ -14,7 +14,7 @@ class Messages:
 
         return text.replace("\\", "")
 
-    def report_error_text():
+    def choose_software_text():
         return f"""{bold("Выберите версию программы:")}
 • SF SEO Spider 19.4
 • SF SEO Spider 19.2
@@ -25,6 +25,10 @@ class Messages:
     def instruction_report_text():
         text = f"""{bold("Пожалуйста, напишите в произвольной форме где вы нашли ошибку и по возможности сделайте скриншот в виде ссылки.")}"""
 
+        return text.replace("\\", "")
+
+    def instruction_feature_text():
+        text = f"""{bold("Пожалуйста, напишите в произвольной форме свои предложения по улучшению перевода и по возможности сделайте скриншот в виде ссылки.")}"""
         return text.replace("\\", "")
 
     def confirm_payment(chosen_software: str):
