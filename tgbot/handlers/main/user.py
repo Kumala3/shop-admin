@@ -4,12 +4,11 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.context import FSMContext
 
-from tgbot.misc.states import SoftwareChoice, ErrorMessage
+from tgbot.misc.async_session import get_session_pool
+from tgbot.misc.states import SoftwareChoice, Tickets
 from tgbot.keyboards.inline import UserKeyboards
 from tgbot.misc.messages import Messages
-from config import load_config
 
-from infrastructure.database.setup import create_engine, create_session_pool
 from infrastructure.database.repo.requests import RequestsRepo
 
 user_router = Router()
@@ -81,27 +80,28 @@ async def back_software_chs(query: CallbackQuery):
     )
 
 
-@user_router.callback_query((F.data == "report_error") | (F.data == "offer_translate"))
-async def choose_soft_error(query: CallbackQuery, state: FSMContext):
+@user_router.callback_query(F.data == "offer_translate")
+async def choose_offer_translate(query: CallbackQuery, state: FSMContext):
     await query.message.edit_text(
-        text=Messages.report_error_text(),
-        reply_markup=UserKeyboards.software_error_kb(),
+        text=Messages.choose_software_text(),
+        reply_markup=UserKeyboards.available_softwares_fea_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
     await state.set_state(SoftwareChoice.software)
 
 
-@user_router.callback_query(F.data == "back_chs_report")
-async def back_chs_soft_error(query: CallbackQuery):
+@user_router.callback_query(F.data == "report_error")
+async def choose_soft_error(query: CallbackQuery, state: FSMContext):
     await query.message.edit_text(
-        text=Messages.report_error_text(),
-        reply_markup=UserKeyboards.software_error_kb(),
+        text=Messages.choose_software_text(),
+        reply_markup=UserKeyboards.available_softwares_err_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
+    await state.set_state(SoftwareChoice.software)
 
 
 @user_router.callback_query(F.data.startswith("err_"))
-async def report_message(query: CallbackQuery, state: FSMContext):
+async def choose_software_error(query: CallbackQuery, state: FSMContext):
     data = query.data
     chosen_software = " ".join(data.split("_")[1:])
 
@@ -109,19 +109,45 @@ async def report_message(query: CallbackQuery, state: FSMContext):
 
     await query.message.edit_text(
         text=Messages.instruction_report_text(),
-        reply_markup=UserKeyboards.back_keyboard("chs_report"),
+        reply_markup=UserKeyboards.back_keyboard("back_err_available"),
         parse_mode=ParseMode.MARKDOWN,
     )
-    await state.set_state(ErrorMessage.error_message)
+    await state.set_state(Tickets.error_message)
 
 
-@user_router.message(ErrorMessage.error_message)
+@user_router.callback_query(F.data.startswith("fea_"))
+async def choose_software_feature(query: CallbackQuery, state: FSMContext):
+    data = query.data
+    chosen_software = " ".join(data.split("_")[1:])
+
+    await state.update_data(software=chosen_software)
+
+    await query.message.edit_text(
+        text=Messages.instruction_feature_text(),
+        reply_markup=UserKeyboards.back_keyboard("back_fea_available"),
+        parse_mode=ParseMode.MARKDOWN,
+    )
+    await state.set_state(Tickets.feature_message)
+
+
+@user_router.callback_query(F.data.startswith("soft_back"))
+async def back_chs_soft_error(query: CallbackQuery):
+    if query.data == "soft_back_err_available":
+        await query.message.edit_text(
+            text=Messages.choose_software_text(),
+            reply_markup=UserKeyboards.available_softwares_err_kb(),
+            parse_mode=ParseMode.MARKDOWN,
+        )
+    elif query.data == "soft_back_fea_available":
+        await query.message.edit_text(
+            text=Messages.choose_software_text(),
+            reply_markup=UserKeyboards.available_softwares_fea_kb(),
+            parse_mode=ParseMode.MARKDOWN,
+        )
+
+
+@user_router.message(Tickets.error_message)
 async def send_error_ticket(message: Message, state: FSMContext):
-    config = load_config(".env")
-
-    engine = create_engine(config.db)
-    session_pool = create_session_pool(engine)
-
     user_id = message.from_user.id
     username = message.from_user.username
     error_message = message.text
@@ -129,7 +155,7 @@ async def send_error_ticket(message: Message, state: FSMContext):
     data = await state.get_data()
     chosen_software = data.get("software")
 
-    async with session_pool() as session:
+    async with get_session_pool() as session:
         repo = RequestsRepo(session)
         await repo.errors.create_error_ticket(
             user_id=user_id,
@@ -138,11 +164,33 @@ async def send_error_ticket(message: Message, state: FSMContext):
             username=username,
         )
 
-    await message.answer(
-        text=Messages.confirm_request()
-    )
+    await message.answer(text=Messages.confirm_request())
 
     await state.clear()
+
+
+@user_router.message(Tickets.feature_message)
+async def send_feature_ticket(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    error_message = message.text
+
+    data = await state.get_data()
+    chosen_software = data.get("software")
+
+    async with get_session_pool() as session:
+        repo = RequestsRepo(session)
+        await repo.features.create_feature_ticket(
+            user_id=user_id,
+            feature_message=error_message,
+            software=chosen_software,
+            username=username,
+        )
+
+    await message.answer(text=Messages.confirm_request())
+
+    await state.clear()
+
 
 @user_router.message()
 async def undefined_message(message: Message):
