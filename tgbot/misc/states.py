@@ -2,4 +2,9 @@ from aiogram.fsm.state import StatesGroup, State
 
 
 class SoftwareChoice(StatesGroup):
-    chosen_software = State()
+    software = State()
+
+
+class ErrorMessage(StatesGroup):
+    error_message = State()
+

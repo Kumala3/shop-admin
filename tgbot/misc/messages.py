@@ -30,3 +30,6 @@ class Messages:
     def confirm_payment(chosen_software: str):
         text = f"""Вы выбрали перевод для {bold(chosen_software)}. Для оплаты нажмите кнопку «Оплатить»"""
         return text.replace("\\", "")
+
+    def confirm_request():
+        return "Спасибо за обращение! Оно будет рассмотрено в ближайшее время."

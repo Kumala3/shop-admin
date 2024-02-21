@@ -46,13 +46,19 @@ class UserKeyboards:
     def software_error_kb():
         keyboard = InlineKeyboardBuilder()
 
-        keyboard.button(text="🐸 SF SEO Spider 19.4", callback_data="err_spider_19.4")
-        keyboard.button(text="🐸 SF SEO Spider 19.2", callback_data="err_spider_19.2")
         keyboard.button(
-            text="🐸 SF Log File Analyser 6.0", callback_data="err_analyser_6.0"
+            text="🐸 SF SEO Spider 19.4", callback_data="err_SF_SEO_Spider_19.4"
         )
         keyboard.button(
-            text="🐸 SF Log File Analyser 5.3", callback_data="err_analyser_5.3"
+            text="🐸 SF SEO Spider 19.2", callback_data="err_SF_SEO_Spider_19.2"
+        )
+        keyboard.button(
+            text="🐸 SF Log File Analyser 6.0",
+            callback_data="err_SF_Log_File_Analyser_6.0",
+        )
+        keyboard.button(
+            text="🐸 SF Log File Analyser 5.3",
+            callback_data="err_SF_Log_File_Analyser_5.3",
         )
         keyboard.button(text="🔙 Назад", callback_data="back_software_chs")
 
