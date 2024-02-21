@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure.database.repo.users import UserRepo
 from infrastructure.database.repo.errors import ErrorRepo
+from infrastructure.database.repo.features import FeatureRepo
 
 
 @dataclass
@@ -29,3 +30,10 @@ class RequestsRepo:
         The Error repository sessions are required to manage error operations.
         """
         return ErrorRepo(self.session)
+
+    @property
+    def features(self) -> FeatureRepo:
+        """
+        The Features repository sessions are required to manage feature operations.
+        """
+        return FeatureRepo(self.session)
