@@ -6,8 +6,8 @@ from aiogram.fsm.context import FSMContext
 
 from tgbot.misc.async_session import get_session_pool
 from tgbot.misc.states import SoftwareChoice, Tickets
-from tgbot.keyboards.inline import UserKeyboards
-from tgbot.misc.messages import Messages
+from tgbot.keyboards.user_inline import UserKeyboards
+from tgbot.misc.messages import UserMessages
 
 from infrastructure.database.repo.requests import RequestsRepo
 
@@ -24,7 +24,7 @@ async def user_start(message: Message):
 @user_router.callback_query(F.data == "translating")
 async def buy_translating(query: CallbackQuery):
     await query.message.edit_text(
-        text=Messages.buy_translate_text(),
+        text=UserMessages.buy_translate_text(),
         reply_markup=UserKeyboards.software_choices_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -39,7 +39,7 @@ async def pay_order(query: CallbackQuery, state: FSMContext):
     await state.update_data(software=chosen_software)
 
     await query.message.edit_text(
-        text=Messages.confirm_payment(chosen_software),
+        text=UserMessages.confirm_payment(chosen_software),
         reply_markup=UserKeyboards.pay_keyboard(),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -51,7 +51,7 @@ async def back_to_pay(query: CallbackQuery, state: FSMContext):
     chosen_software = data.get("chosen_software")
 
     await query.message.edit_text(
-        text=Messages.confirm_payment(chosen_software),
+        text=UserMessages.confirm_payment(chosen_software),
         reply_markup=UserKeyboards.pay_keyboard(),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -60,14 +60,14 @@ async def back_to_pay(query: CallbackQuery, state: FSMContext):
 @user_router.callback_query(F.data == "pay_order")
 async def choose_payment(query: CallbackQuery):
     await query.message.edit_text(
-        text="Выберите способ оплаты:", reply_markup=UserKeyboards.payments_keyboard()
+        text="Приветствую в нашем боте!", reply_markup=UserKeyboards.payments_keyboard()
     )
 
 
 @user_router.callback_query(F.data == "back_pay_order")
 async def back_pay_order(query: CallbackQuery):
     await query.message.edit_text(
-        text=Messages.buy_translate_text(),
+        text=UserMessages.buy_translate_text(),
         reply_markup=UserKeyboards.software_choices_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -83,7 +83,7 @@ async def back_software_chs(query: CallbackQuery):
 @user_router.callback_query(F.data == "offer_translate")
 async def choose_offer_translate(query: CallbackQuery, state: FSMContext):
     await query.message.edit_text(
-        text=Messages.choose_software_text(),
+        text=UserMessages.choose_software_text(),
         reply_markup=UserKeyboards.available_softwares_fea_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -93,7 +93,7 @@ async def choose_offer_translate(query: CallbackQuery, state: FSMContext):
 @user_router.callback_query(F.data == "report_error")
 async def choose_soft_error(query: CallbackQuery, state: FSMContext):
     await query.message.edit_text(
-        text=Messages.choose_software_text(),
+        text=UserMessages.choose_software_text(),
         reply_markup=UserKeyboards.available_softwares_err_kb(),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -108,7 +108,7 @@ async def choose_software_error(query: CallbackQuery, state: FSMContext):
     await state.update_data(software=chosen_software)
 
     await query.message.edit_text(
-        text=Messages.instruction_report_text(),
+        text=UserMessages.instruction_report_text(),
         reply_markup=UserKeyboards.back_keyboard("back_err_available"),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -123,7 +123,7 @@ async def choose_software_feature(query: CallbackQuery, state: FSMContext):
     await state.update_data(software=chosen_software)
 
     await query.message.edit_text(
-        text=Messages.instruction_feature_text(),
+        text=UserMessages.instruction_feature_text(),
         reply_markup=UserKeyboards.back_keyboard("back_fea_available"),
         parse_mode=ParseMode.MARKDOWN,
     )
@@ -134,13 +134,13 @@ async def choose_software_feature(query: CallbackQuery, state: FSMContext):
 async def back_chs_soft_error(query: CallbackQuery):
     if query.data == "soft_back_err_available":
         await query.message.edit_text(
-            text=Messages.choose_software_text(),
+            text=UserMessages.choose_software_text(),
             reply_markup=UserKeyboards.available_softwares_err_kb(),
             parse_mode=ParseMode.MARKDOWN,
         )
     elif query.data == "soft_back_fea_available":
         await query.message.edit_text(
-            text=Messages.choose_software_text(),
+            text=UserMessages.choose_software_text(),
             reply_markup=UserKeyboards.available_softwares_fea_kb(),
             parse_mode=ParseMode.MARKDOWN,
         )
@@ -164,7 +164,7 @@ async def send_error_ticket(message: Message, state: FSMContext):
             username=username,
         )
 
-    await message.answer(text=Messages.confirm_request())
+    await message.answer(text=UserMessages.confirm_request())
 
     await state.clear()
 
@@ -187,7 +187,7 @@ async def send_feature_ticket(message: Message, state: FSMContext):
             username=username,
         )
 
-    await message.answer(text=Messages.confirm_request())
+    await message.answer(text=UserMessages.confirm_request())
 
     await state.clear()
 
