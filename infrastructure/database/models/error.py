@@ -19,7 +19,7 @@ class Error(Base, TableNameMixin, TimestampMixin):
     """
     error_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(BIGINT, ForeignKey("users.user_id"))
-    username: Mapped[Optional[str]] = mapped_column(String(1000), unique=True)
+    username: Mapped[Optional[str]] = mapped_column(String(1000))
     error_message: Mapped[str] = mapped_column(String)
     status: Mapped[str] = mapped_column(String, server_default="New")
     software: Mapped[str] = mapped_column(String)

@@ -116,7 +116,7 @@ async def report_message(query: CallbackQuery, state: FSMContext):
 
 
 @user_router.message(ErrorMessage.error_message)
-async def catch_message(message: Message, state: FSMContext):
+async def send_error_ticket(message: Message, state: FSMContext):
     config = load_config(".env")
 
     engine = create_engine(config.db)
@@ -142,6 +142,7 @@ async def catch_message(message: Message, state: FSMContext):
         text=Messages.confirm_request()
     )
 
+    await state.clear()
 
 @user_router.message()
 async def undefined_message(message: Message):
