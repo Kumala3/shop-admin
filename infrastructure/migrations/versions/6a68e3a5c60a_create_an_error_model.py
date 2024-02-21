@@ -10,7 +10,6 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision: str = "6a68e3a5c60a"
 down_revision: Union[str, None] = "5a434965d6a4"
@@ -28,6 +27,9 @@ def upgrade() -> None:
         sa.Column("error_message", sa.String(length=1000)),
         sa.Column("status", sa.String(), server_default="New"),
         sa.Column("software", sa.String()),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False
+        ),
         sa.ForeignKeyConstraint(["user_id"], ["users.user_id"]),
         sa.PrimaryKeyConstraint("error_id"),
     )
