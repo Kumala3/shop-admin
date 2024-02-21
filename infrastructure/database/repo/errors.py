@@ -2,8 +2,7 @@ from typing import Optional
 from sqlalchemy.dialects.postgresql import insert
 
 from infrastructure.database.models.error import Error
-from infrastructure.database.models.users import User
-from infrastructure.database.repo.base import BaseRepo
+from .base import BaseRepo
 
 
 class ErrorRepo(BaseRepo):

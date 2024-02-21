@@ -43,7 +43,7 @@ class UserKeyboards:
 
         return keyboard.as_markup()
 
-    def software_error_kb():
+    def available_softwares_err_kb():
         keyboard = InlineKeyboardBuilder()
 
         keyboard.button(
@@ -66,10 +66,33 @@ class UserKeyboards:
 
         return keyboard.as_markup()
 
+    def available_softwares_fea_kb():
+        keyboard = InlineKeyboardBuilder()
+
+        keyboard.button(
+            text="🐸 SF SEO Spider 19.4", callback_data="fea_SF_SEO_Spider_19.4"
+        )
+        keyboard.button(
+            text="🐸 SF SEO Spider 19.2", callback_data="fea_SF_SEO_Spider_19.2"
+        )
+        keyboard.button(
+            text="🐸 SF Log File Analyser 6.0",
+            callback_data="fea_SF_Log_File_Analyser_6.0",
+        )
+        keyboard.button(
+            text="🐸 SF Log File Analyser 5.3",
+            callback_data="fea_SF_Log_File_Analyser_5.3",
+        )
+        keyboard.button(text="🔙 Назад", callback_data="back_software_chs")
+
+        keyboard.adjust(1)
+
+        return keyboard.as_markup()
+
     def back_keyboard(path: str):
         keyboard = InlineKeyboardBuilder()
 
-        keyboard.button(text="🔙 Назад", callback_data=f"back_{path}")
+        keyboard.button(text="🔙 Назад", callback_data=f"soft_{path}")
 
         return keyboard.as_markup()
 

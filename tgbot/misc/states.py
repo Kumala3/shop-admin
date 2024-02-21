@@ -5,6 +5,6 @@ class SoftwareChoice(StatesGroup):
     software = State()
 
 
-class ErrorMessage(StatesGroup):
+class Tickets(StatesGroup):
     error_message = State()
-
+    feature_message = State()
