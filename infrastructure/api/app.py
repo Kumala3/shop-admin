@@ -7,23 +7,27 @@ from sqladmin import Admin
 from config import load_config, Config
 
 from infrastructure.database.setup import create_engine
-from infrastructure.admin_panel.web_pages import Users, Features, Errors, CustomAdmin
+from infrastructure.admin_panel.web_pages import Users, Features, Errors
+from infrastructure.admin_panel.authentication import AdminAuth
 
 config: Config = load_config(".env")
 engine = create_engine(config.db)
 
 app = FastAPI()
 
+authentication_backend = AdminAuth(secret_key=config.admin_panel.secret_key)
+
 admin = Admin(
     app,
     engine=engine,
     logo_url=config.admin_panel.logo_url,
+    authentication_backend=authentication_backend,
 )
 
 admin.add_view(Users)
 admin.add_view(Features)
 admin.add_view(Errors)
-admin.add_base_view(CustomAdmin)
+# admin.add_base_view(CustomAdmin)
 
 log_level = logging.INFO
 bl.basic_colorized_config(level=log_level)
