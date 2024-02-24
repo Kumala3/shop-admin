@@ -158,9 +158,12 @@ class AdminPanel:
     ----------
     logo_url : str
         A string used to hold the URL of the logo.
+    secret_key : str
+        A string used to hold the secret key.
     """
 
     logo_url: str
+    secret_key: str
 
     @staticmethod
     def from_env(env: Env):
@@ -168,8 +171,9 @@ class AdminPanel:
         Creates the RedisConfig object from environment variables.
         """
         logo_url = env.str("ADMIN_LOGO_URL")
+        secret_key = env.str("ADMIN_SECRET_KEY")
 
-        return AdminPanel(logo_url=logo_url)
+        return AdminPanel(logo_url=logo_url, secret_key=secret_key)
 
 
 @dataclass
