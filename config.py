@@ -147,6 +147,32 @@ class Miscellaneous:
 
 
 @dataclass
+class AdminPanel:
+    """
+    Admin panel configuration class.
+
+    This class holds settings for the admin panel.
+    It merely serves as a placeholder for settings that are not part of other categories.
+
+    Attributes
+    ----------
+    logo_url : str
+        A string used to hold the URL of the logo.
+    """
+
+    logo_url: str
+
+    @staticmethod
+    def from_env(env: Env):
+        """
+        Creates the RedisConfig object from environment variables.
+        """
+        logo_url = env.str("ADMIN_LOGO_URL")
+
+        return AdminPanel(logo_url=logo_url)
+
+
+@dataclass
 class Config:
     """
     The main configuration class that integrates all the other configuration classes.
@@ -169,6 +195,7 @@ class Config:
     misc: Miscellaneous
     db: Optional[DbConfig] = None
     redis: Optional[RedisConfig] = None
+    admin_panel: Optional[AdminPanel] = None
 
 
 def load_config(path: str = None) -> Config:
@@ -188,5 +215,6 @@ def load_config(path: str = None) -> Config:
         tg_bot=TgBot.from_env(env),
         db=DbConfig.from_env(env),
         redis=RedisConfig.from_env(env),
+        admin_panel=AdminPanel.from_env(env),
         misc=Miscellaneous(),
     )
