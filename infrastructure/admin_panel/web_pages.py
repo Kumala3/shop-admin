@@ -74,4 +74,5 @@ class CustomAdmin(BaseView):
 
     @expose("/custom", methods=["GET"])
     async def test_page(self, request: Request):
-        return await self.templates.TemplateResponse(request, "custom.html")
+        # return await self.templates.TemplateResponse(request, "custom.html")
+        return {"status": "life - hard, code - easy"}
