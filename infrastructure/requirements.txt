@@ -6,3 +6,4 @@ alembic~=1.0
 asyncpg
 environs
 sqladmin
+itsdangerous
