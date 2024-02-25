@@ -19,7 +19,7 @@ class Error(Base, TableNameMixin, TimestampMixin):
         software (str): The software where the error was detected.
     """
     error_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BIGINT, ForeignKey("users.user_id"))
+    user_id: Mapped[int] = mapped_column(BIGINT, ForeignKey("users.user_id"), nullable=False)
     username: Mapped[Optional[str]] = mapped_column(String)
     error_message: Mapped[str] = mapped_column(String(1000))
     status: Mapped[str] = mapped_column(String, server_default="New")
