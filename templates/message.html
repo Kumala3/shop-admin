@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Enter Message</title>
+    <link rel="stylesheet" href="/static/styles/message.css" />
+</head>
+
+<body>
+    <div class="input-box">
+        <form action="/submit_message" method="post">
+            <label class="info-text" for="message">Введите свой текст для рассылки тут:</label><br />
+
+            <textarea class="message-input" name="message" rows="20" maxlength="1000" placeholder="Введите свой текст тут ..." spellcheck="true" autofocus required></textarea>
+
+            <br />
+            <input class="submit-button" type="submit" value="Submit" />
+        </form>
+    </div>
+    <script src="/static/js/formValidation.js" />
+</body>
+
+</html>
