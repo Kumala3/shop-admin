@@ -1,11 +1,19 @@
 from fastapi import Request
-from sqladmin import ModelView, BaseView, expose
+from fastapi.responses import RedirectResponse
+from sqladmin import ModelView, BaseView, expose, action
 from infrastructure.database.models.users import User
 from infrastructure.database.models.error import Error
 from infrastructure.database.models.feature import Feature
 
-
 class Users(ModelView, model=User):
+    @action(
+        name="mailing",
+        label="Общая Рассылка",
+        add_in_list=True,
+    )
+    async def send_mailing(self, request: Request):
+        return RedirectResponse("/action/enter_message")
+
     column_list = "__all__"
     can_create = False
     can_export = True
