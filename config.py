@@ -164,6 +164,8 @@ class AdminPanel:
 
     logo_url: str
     secret_key: str
+    admin_username: str
+    admin_password: str
 
     @staticmethod
     def from_env(env: Env):
@@ -172,8 +174,15 @@ class AdminPanel:
         """
         logo_url = env.str("ADMIN_LOGO_URL")
         secret_key = env.str("ADMIN_SECRET_KEY")
+        admin_username = env.str("ADMIN_USERNAME")
+        admin_password = env.str("ADMIN_PASSWORD")
 
-        return AdminPanel(logo_url=logo_url, secret_key=secret_key)
+        return AdminPanel(
+            logo_url=logo_url,
+            secret_key=secret_key,
+            admin_username=admin_username,
+            admin_password=admin_password,
+        )
 
 
 @dataclass

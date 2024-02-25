@@ -15,7 +15,9 @@ engine = create_engine(config.db)
 
 app = FastAPI()
 
-authentication_backend = AdminAuth(secret_key=config.admin_panel.secret_key)
+authentication_backend = AdminAuth(
+    secret_key=config.admin_panel.secret_key,
+)
 
 admin = Admin(
     app,
