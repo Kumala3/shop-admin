@@ -1,9 +1,10 @@
-aiogram~=3.0
+aiogram
 environs~=9.0
 redis
 betterlogging
 sqlalchemy~=2.0
 asyncpg
+fastapi
 
 # # For enabling api:
 # backoff
