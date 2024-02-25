@@ -7,3 +7,5 @@ asyncpg
 environs
 sqladmin
 itsdangerous
+PyJWT
+passlib
