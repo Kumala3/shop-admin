@@ -2,7 +2,7 @@ import logging
 import betterlogging as bl
 
 from fastapi import FastAPI, Request, Depends
-from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi import BackgroundTasks
@@ -11,7 +11,7 @@ from sqladmin import Admin
 from config import load_config, Config
 
 from infrastructure.database.setup import create_engine
-from infrastructure.admin_panel.web_pages import Users, Features, Errors
+from infrastructure.admin_panel.web_pages import Users, Features, Errors, Purchases
 from infrastructure.admin_panel.authentication import AdminAuth
 from infrastructure.database.repo.requests import RequestsRepo
 from infrastructure.api.utils import get_repo
@@ -37,6 +37,7 @@ admin = Admin(
 admin.add_view(Users)
 admin.add_view(Features)
 admin.add_view(Errors)
+admin.add_view(Purchases)
 
 
 log_level = logging.INFO

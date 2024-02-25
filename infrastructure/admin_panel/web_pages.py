@@ -1,9 +1,12 @@
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from sqladmin import ModelView, BaseView, expose, action
+
 from infrastructure.database.models.users import User
 from infrastructure.database.models.error import Error
 from infrastructure.database.models.feature import Feature
+from infrastructure.database.models.purchase import Purchase
+
 
 class Users(ModelView, model=User):
     @action(
@@ -74,6 +77,10 @@ class Errors(ModelView, model=Error):
         Error.status: "Статус",
         Error.username: "Никнейм",
     }
+
+
+class Purchases(ModelView, model=Purchase):
+    column_list = "__all__"
 
 
 class CustomAdmin(BaseView):
