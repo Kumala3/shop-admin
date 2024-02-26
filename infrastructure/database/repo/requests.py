@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from infrastructure.database.repo.users import UserRepo
 from infrastructure.database.repo.errors import ErrorRepo
 from infrastructure.database.repo.features import FeatureRepo
+from infrastructure.database.repo.purchase import PurchaseRepo
 
 
 @dataclass
@@ -37,3 +38,10 @@ class RequestsRepo:
         The Features repository sessions are required to manage feature operations.
         """
         return FeatureRepo(self.session)
+
+    @property
+    def purchases(self) -> PurchaseRepo:
+        """
+        The Purchase repository sessions are required to manage purchase operations.
+        """
+        return PurchaseRepo(self.session)

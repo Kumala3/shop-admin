@@ -1,11 +1,22 @@
 from fastapi import Request
-from sqladmin import ModelView, BaseView, expose
+from fastapi.responses import RedirectResponse
+from sqladmin import ModelView, BaseView, expose, action
+
 from infrastructure.database.models.users import User
 from infrastructure.database.models.error import Error
 from infrastructure.database.models.feature import Feature
+from infrastructure.database.models.purchase import Purchase
 
 
 class Users(ModelView, model=User):
+    @action(
+        name="mailing",
+        label="Общая Рассылка",
+        add_in_list=True,
+    )
+    async def send_mailing(self, request: Request):
+        return RedirectResponse("/action/enter_message")
+
     column_list = "__all__"
     can_create = False
     can_export = True
@@ -65,6 +76,35 @@ class Errors(ModelView, model=Error):
         Error.error_message: "Сообщение",
         Error.status: "Статус",
         Error.username: "Никнейм",
+    }
+
+
+class Purchases(ModelView, model=Purchase):
+    @action(
+        name="mailing",
+        label="Общая Рассылка",
+        add_in_list=True,
+    )
+    async def send_mailing(self, request: Request):
+        return RedirectResponse("/action/enter_message")
+
+    column_list = "__all__"
+    can_create = False
+    can_export = True
+    can_edit = True
+    can_delete = True
+    name_plural = "Покупки"
+    export_types = ["csv", "xls"]
+    column_sortable_list = [Purchase.created_at]
+    column_searchable_list = [Purchase.purchase_id, Purchase.software]
+    column_labels = {
+        Purchase.purchase_id: "ID заказа",
+        Purchase.user_id: "ID пользователя",
+        Purchase.software: "Программа",
+        Purchase.created_at: "Дата регистрации сообщения",
+        Purchase.payment_method: "Метод оплаты",
+        Purchase.status: "Статус",
+        Purchase.username: "Никнейм",
     }
 
 

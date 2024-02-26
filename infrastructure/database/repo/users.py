@@ -1,6 +1,7 @@
 from typing import Optional
 
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import select
 
 from infrastructure.database.models import User
 from infrastructure.database.repo.base import BaseRepo
@@ -48,3 +49,17 @@ class UserRepo(BaseRepo):
 
         await self.session.commit()
         return result.scalar_one()
+
+    async def get_all_users(self):
+        select_stmt = select(User)
+
+        result = await self.session.execute(select_stmt)
+
+        return result.scalars().all()
+
+    async def get_users_ids(self):
+        select_stmt = select(User.user_id)
+
+        result = await self.session.execute(select_stmt)
+
+        return result.scalars().all()

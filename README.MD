@@ -1,74 +1,31 @@
-Цей темплейт використовується для розробки Telegram ботів з використанням бібліотеки [`aiogram v3.0+`](https://github.com/aiogram/aiogram/tree/dev-3.x).
+### 🔧 Instalation:
 
-## SQLAlchemy + Alembic
-В коді є приклади таблички User з використанням SQLAlchemy 2.0, та скрипти для алембіку (ініціалізація алембік, створення та застосування міграцій).
+1. Rename `.env.dist` to `.env` and fill in required data.
+2. **Docker:**
 
-Але, якщо ви з цими інструментами ніколи не працювали, то зверніться до документації і дізнайтесь про ці інструменти. 
-Також, в мене є англомовний [курс по цим інструментам на Udemy](https://www.udemy.com/course/sqlalchemy-alembic-bootcamp/?referralCode=E9099C5B5109EB747126).
+    1. You can start a project with Docker right away, and if you don't have it, you can [Download](https://docs.docker.com/get-docker/) it.
+    2. Run project with next command: `docker-compose up --build`
+    3. Run migrations with next command:
 
-![img.png](https://img-c.udemycdn.com/course/240x135/5320614_a8af_2.jpg)
+        `docker-compose exec api alembic upgrade head`
 
-### Для того, щоб почати використовувати:
-1. Скопіюйте `.env.dist` в `.env` і заповніть необхідні дані.
-2. Створіть нові хендлери.
-3. **Docker:**
-   1. Можете одразу запускати проєкт із Docker, а якщо в вас його немає, то [завантажте, та встановіть](https://docs.docker.com/get-docker/).
-   2. Запустіть проєкт з команди `docker-compose up`
-4. **Без Docker:**
-   1. Створіть [venv](https://docs.python.org/3/library/venv.html)
-   2. Встановить залежності із requirements.txt: `pip install -r requirements.txt --pre`
-   3. Запустіть проєкт з команди `python3 bot.py`
-
-
-### Як робити та реєструвати хендлери:
-Створюєте модуль `you_name.py` у папці `handlers`.
-
-Створюєте роутер у `you_name.py`.
-```python
-from aiogram import Router
-user_router = Router()
-```
-Можна робити декілька роутерів в одному модулі, та на кожний з них навішувати хендлери.
-Можна реєструвати хендлери декораторами:
-```python
-@user_router.message(commands=["start"])
-async def user_start(message):
-    await message.reply("Вітаю, звичайний користувач!")
-```
-
-Заходимо у файл `handlers/__init__.py` і додаємо всі роутери в нього:
-```python
-from .admin import admin_router
-from .echo import echo_router
-from .user import user_router
-
-...
-
-
-routers_list = [
-    admin_router,
-    user_router,
-    echo_router,  # echo_router must be last
-]
-
-```
-### Як додати хендлери до нашого бота:
-Переходимо до файлу  `bot.py` та розпаковуємо наші хендлери:
-```python
-from tgbot.handlers import routers_list
-
-...
-
-async def main():
-   
-    ...
-
-   dp.include_routers(*routers_list)
-
-    ...
-
-
-```
-
-### Туторіали з aiogram v3
-Відосів поки що немає, але @Groosha вже почав робити [свій підручник](https://mastergroosha.github.io/aiogram-3-guide).
+3. **Without Docker:**
+    1. Create [venv](https://docs.python.org/3/library/venv.html)
+    2. Install all requirements:
+        - Go to **tgbot** and install requirements
+          `pip install -r requirements.txt`
+        - Go to **infrastructure** and install requirements:
+          `pip install -r requirements.txt`
+    4. To start DataBase run next command in the terminal:
+        ```
+        postgres -c max_connections=150
+                -c shared_buffers=512MB -c effective_cache_size=1536MB
+                -c maintenance_work_mem=128MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB
+                -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200
+                -c work_mem=3495kB -c min_wal_size=1GB -c max_wal_size=4GB -c max_worker_processes=2
+                -c max_parallel_workers_per_gather=1 -c max_parallel_workers=2 -c max_parallel_maintenance_workers=1
+        ```
+    5. Go to `infrastructure` and run all migrations with next command in the terminal: 
+    
+        `alembic upgrade head`
+    4. To start bot run next command in the terminal: `python3 bot.py`
