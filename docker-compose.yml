@@ -3,6 +3,7 @@ version: '3.3'
 services:
   bot:
     image: "bot"
+    container_name: bot
     stop_signal: SIGINT
     build:
       context: ./tgbot
@@ -13,6 +14,8 @@ services:
     restart: always
     env_file:
       - ".env"
+    networks:
+      - shop_net
     logging:
       driver: "json-file"
       options:
@@ -23,6 +26,9 @@ services:
   #  http://pgconfigurator.cybertec.at/ For Postgres Configuration
   pg_database:
    image: postgres:13-alpine
+   container_name: database
+   networks:
+     - shop_net
    ports:
      - "5439:5432" # Change if you like! 5439 is external to container
    restart: always
@@ -44,28 +50,35 @@ services:
 
   #  To enable redis cache uncomment the following lines
   redis_cache:
+   container_name: redis
    image: redis:6.2-alpine
    restart: always
    command: redis-server --port $REDIS_PORT --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
    env_file:
      - ".env"
+   networks:
+     - shop_net
    volumes:
      - cache:/data
 
   api:
    image: "api"
+   container_name: api
    stop_signal: SIGINT
    build:
      context: ./infrastructure
      dockerfile: Dockerfile
    volumes:
      - .:/usr/src/app/api
-   command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "8000" ]
+   command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--forwarded-allow-ips='*'", "--proxy-headers"]
+#   command: [ "uvicorn", "infrastructure.api.app:app", "--forwarded-allow-ips='*'", "--proxy-headers"]
    restart: always
    env_file:
      - ".env"
-   ports:
-     - "8000:8000"
+   networks:
+     - shop_net
+#   ports:
+#     - "8000:80"
    logging:
      driver: "json-file"
      options:
@@ -77,13 +90,21 @@ services:
     stop_signal: SIGINT
     restart: always
     image: nginx:latest
+    networks:
+     - shop_net
     ports:
       - '80:80'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-
+    depends_on:
+      - bot
+      - api
+      - pg_database
 
 # Uncomment the following lines if you want to use a volume for the database
 volumes:
  pgdata: { }
  cache: { }
+networks:
+    shop_net:
+        name: shop_net
