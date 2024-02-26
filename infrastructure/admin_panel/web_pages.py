@@ -80,7 +80,32 @@ class Errors(ModelView, model=Error):
 
 
 class Purchases(ModelView, model=Purchase):
+    @action(
+        name="mailing",
+        label="Общая Рассылка",
+        add_in_list=True,
+    )
+    async def send_mailing(self, request: Request):
+        return RedirectResponse("/action/enter_message")
+
     column_list = "__all__"
+    can_create = False
+    can_export = True
+    can_edit = True
+    can_delete = True
+    name_plural = "Покупки"
+    export_types = ["csv", "xls"]
+    column_sortable_list = [Purchase.created_at]
+    column_searchable_list = [Purchase.purchase_id, Purchase.software]
+    column_labels = {
+        Purchase.purchase_id: "ID заказа",
+        Purchase.user_id: "ID пользователя",
+        Purchase.software: "Программа",
+        Purchase.created_at: "Дата регистрации сообщения",
+        Purchase.payment_method: "Метод оплаты",
+        Purchase.status: "Статус",
+        Purchase.username: "Никнейм",
+    }
 
 
 class CustomAdmin(BaseView):
