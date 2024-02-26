@@ -7,7 +7,7 @@ asyncpg
 environs
 sqladmin
 itsdangerous
-iaiogram
+aiogram
 redis
 PyJWT
 passlib
