@@ -57,3 +57,9 @@ class UserRepo(BaseRepo):
 
         return result.scalars().all()
 
+    async def get_users_ids(self):
+        select_stmt = select(User.user_id)
+
+        result = await self.session.execute(select_stmt)
+
+        return result.scalars().all()

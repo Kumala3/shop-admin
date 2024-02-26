@@ -67,20 +67,27 @@ async def start_mailing(
     raw_text = await request.form()
     formatted_message = str(raw_text["message"].strip())
 
-    all_users = await repo.users.get_all_users()
+    result_data = await repo.users.get_users_ids()
 
-    async def send_messages(message: str, users: list):
-        for user in users:
+    async def send_messages(message: str, users_ids: list):
+        for user_id in users_ids:
             try:
                 await bot.send_message(
-                    user.user_id, text=message, disable_web_page_preview=True
+                    user_id, text=message, disable_web_page_preview=True
                 )
             except Exception as e:
-                log.info(f"Error sending message to user {user.user_id}: {e}")
-        log.info(f"Mailing was successful for {len(users)} users")
+                log.info(f"Error sending message to user {user_id}: {e}")
+        log.info(f"Mailing was successful for {len(users_ids)} users")
 
-    background_tasks.add_task(send_messages, formatted_message, all_users)
+    background_tasks.add_task(send_messages, formatted_message, result_data)
 
     return templates.TemplateResponse(
-        "success_mailing.html", {"request": request, "count_users": len(all_users)}
+        "success_mailing.html", {"request": request, "count_users": len(result_data)}
     )
+
+
+@app.get("/test_user_ids")
+async def get_users_ids(repo: RequestsRepo = Depends(get_repo)):
+    users_ids = await repo.purchases.get_customers_ids()
+    
+    return {"users_ids": users_ids}
