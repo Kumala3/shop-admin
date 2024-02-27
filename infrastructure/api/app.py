@@ -55,7 +55,8 @@ async def webhook_endpoint(request: Request):
 
 @app.get("/action/enter_message", response_class=HTMLResponse)
 async def enter_message(request: Request):
-    return templates.TemplateResponse("message.html", {"request": request})
+    is_customers = request.query_params.get("customers")
+    return templates.TemplateResponse("message.html", {"request": request, "only_customers": is_customers})
 
 
 @app.post("/submit_message", response_class=HTMLResponse)
@@ -66,8 +67,12 @@ async def start_mailing(
 ):
     raw_text = await request.form()
     formatted_message = str(raw_text["message"].strip())
+    
+    status = request.query_params.get("customers")
 
-    result_data = await repo.users.get_users_ids()
+    customers_ids = await repo.purchases.get_customers_ids()
+    
+    users_ids = await repo.users.get_users_ids()
 
     async def send_messages(message: str, users_ids: list):
         for user_id in users_ids:
@@ -79,11 +84,18 @@ async def start_mailing(
                 log.info(f"Error sending message to user {user_id}: {e}")
         log.info(f"Mailing was successful for {len(users_ids)} users")
 
-    background_tasks.add_task(send_messages, formatted_message, result_data)
-
-    return templates.TemplateResponse(
-        "success_mailing.html", {"request": request, "count_users": len(result_data)}
-    )
+    if status == "true":
+        background_tasks.add_task(send_messages, formatted_message, customers_ids)
+        return templates.TemplateResponse(
+            "success_mailing.html",
+            {"request": request, "count_users": len(customers_ids)},
+        )
+    else:
+        background_tasks.add_task(send_messages, formatted_message, users_ids)
+        return templates.TemplateResponse(
+            "success_mailing.html",
+            {"request": request, "count_users": len(users_ids)},
+        )
 
 
 @app.get("/test_user_ids")

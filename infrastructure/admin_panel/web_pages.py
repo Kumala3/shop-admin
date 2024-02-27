@@ -86,7 +86,7 @@ class Purchases(ModelView, model=Purchase):
         add_in_list=True,
     )
     async def send_mailing(self, request: Request):
-        return RedirectResponse("/action/enter_message")
+        return RedirectResponse("/action/enter_message?customers=true")
 
     column_list = "__all__"
     can_create = False
