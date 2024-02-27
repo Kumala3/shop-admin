@@ -9,7 +9,7 @@
 
 <body>
     <div class="container-input">
-        <form action="/submit_message" method="post">
+        <form action="{{ '/submit_message' + ('?customers=true' if only_customers == 'true' else '')}}" method="post">
             <p class="info-text">Введите свой текст для рассылки тут:</p>
 
             <textarea class="message-input" name="message" rows="10" maxlength="4096"
