@@ -8,17 +8,20 @@
 </head>
 
 <body>
-    <div class="input-box">
+    <div class="container-input">
         <form action="/submit_message" method="post">
-            <label class="info-text" for="message">Введите свой текст для рассылки тут:</label><br />
+            <p class="info-text">Введите свой текст для рассылки тут:</p>
 
-            <textarea class="message-input" name="message" rows="20" maxlength="1000" placeholder="Введите свой текст тут ..." spellcheck="true" autofocus required></textarea>
+            <textarea class="message-input" name="message" rows="10" maxlength="4096"
+                placeholder="Введите свой текст тут ..." spellcheck="true" autofocus required></textarea>
 
-            <br />
+            <p class="char-counter">0/4096</p>
+
             <input class="submit-button" type="submit" value="Submit" />
         </form>
     </div>
-    <script src="/static/js/formValidation.js" />
+    <script src="/static/js/formValidation.js"></script>
+    <script src="/static/js/limitCharacters.js"></script>
 </body>
 
 </html>
