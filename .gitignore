@@ -62,3 +62,6 @@ venv.bak/
 .idea/
 .env
 cache/
+cert.pem
+cloudflare.crt
+key.pem
