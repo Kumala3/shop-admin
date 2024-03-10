@@ -1,8 +1,10 @@
+import random
 from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.context import FSMContext
+from AaioAsync import AaioAsync
 
 from tgbot.misc.async_session import get_session_pool
 from tgbot.misc.states import SoftwareChoice, Tickets
@@ -10,8 +12,19 @@ from tgbot.keyboards.user_inline import UserKeyboards
 from tgbot.misc.messages import UserMessages
 
 from infrastructure.database.repo.requests import RequestsRepo
+from config import Miscellaneous
+from environs import Env
+
+env = Env()
+env.read_env()
+miscelaneous = Miscellaneous.from_env(env)
 
 user_router = Router()
+aaio = AaioAsync(
+    miscelaneous.api_key,
+    miscelaneous.shop_id,
+    miscelaneous.secretkey_1,
+)
 
 
 @user_router.message(CommandStart())
@@ -62,6 +75,26 @@ async def choose_payment(query: CallbackQuery):
     await query.message.edit_text(
         text="Выберите способ оплаты:", reply_markup=UserKeyboards.payments_keyboard()
     )
+
+
+@user_router.callback_query(F.data == "pay")
+async def pay_aaio(query: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    chosen_software = data.get("software")
+
+    link = await aaio.generatepaymenturl(
+        amount=105,
+        currency="RUB",
+        desc=f"Покупка перевода для |{chosen_software}|{query.from_user.id}",
+        order_id=str(random.randint(1000000000, 9999999999)),
+    )
+    await query.message.edit_text(
+        text=UserMessages.payment_aaio(chosen_software),
+        reply_markup=UserKeyboards.pay_with_link(link),
+        parse_mode=ParseMode.MARKDOWN,
+    )
+
+    await state.set_state(SoftwareChoice.payment)
 
 
 @user_router.callback_query(F.data == "back_pay_order")
