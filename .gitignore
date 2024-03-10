@@ -68,4 +68,5 @@ key.pem
 chain.pem
 fullchain.pem
 README
+privkey.pem
 
