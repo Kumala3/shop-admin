@@ -40,6 +40,22 @@ class PurchaseRepo(BaseRepo):
 
         return {"status": "success"}
 
+    async def get_purchase_by_id(self, purchase_id):
+        """
+        Get a purchase by ID.
+
+        Args:
+            purchase_id (int): The ID of the purchase to retrieve.
+
+        Returns:
+            Purchase: The purchase with the given ID.
+        """
+        select_stmt = select(Purchase).where(Purchase.purchase_id == purchase_id)
+
+        result = await self.session.execute(select_stmt)
+
+        return result.scalar()
+
     async def get_customers_ids(self):
         """
         Get a list of all customers who have made a purchase.
@@ -52,4 +68,22 @@ class PurchaseRepo(BaseRepo):
         result = await self.session.execute(select_stmt)
 
         return result.scalars().all()
-        
+
+    async def delete_purchase_by_id(self, user_id: int):
+        """
+        Delete a purchase by user ID.
+
+        Args:
+            user_id (int): The ID of the user whose purchase should be deleted.
+
+        Returns:
+            dict: A dictionary containing the status of the operation.
+        """
+
+        delete_stmt = Purchase.delete().where(Purchase.user_id == user_id)
+
+        await self.session.execute(delete_stmt)
+
+        await self.session.commit()
+
+        return {"status": "puchase was successfully deleted"}
