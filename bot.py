@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisStorage, DefaultKeyBuilder
 
+
 from config import load_config, Config
 from tgbot.handlers import routers_list
 from tgbot.middlewares.config import ConfigMiddleware
@@ -16,9 +17,12 @@ from infrastructure.database.setup import create_engine, create_session_pool
 config = load_config(".env")
 bot = Bot(token=config.tg_bot.token, parse_mode="HTML")
 
+
 async def on_startup(bot: Bot, admin_ids: list[int]):
     time_now = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-    await broadcaster.broadcast(bot, admin_ids, f"Бот запущен!\nТекущее время: {time_now}")
+    await broadcaster.broadcast(
+        bot, admin_ids, f"Бот запущен!\nТекущее время: {time_now}"
+    )
 
 
 def register_global_middlewares(dp: Dispatcher, config: Config, session_pool):
@@ -96,7 +100,7 @@ async def main():
 
     engine = create_engine(config.db)
     session_pool = create_session_pool(engine)
-    
+
     dp = Dispatcher(storage=storage)
 
     dp.include_routers(*routers_list)

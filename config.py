@@ -139,11 +139,45 @@ class Miscellaneous:
 
     Attributes
     ----------
-    other_params : str, optional
-        A string used to hold other various parameters as required (default is None).
+    api_key : str, optional
+        The API key used for authentication.
+    shop_id : str, optional
+        The ID of the shop.
+    secretkey_1 : str, optional
+        The secret key used for encryption.
+
+    Methods
+    -------
+    from_env(env: Env) -> Miscellaneous:
+        Creates the Miscellaneous object from environment variables.
+
     """
 
-    other_params: str = None
+    api_key: str
+    shop_id: str
+    secretkey_1: str
+
+    @staticmethod
+    def from_env(env: Env):
+        """
+        Creates the Miscellaneous object from environment variables.
+
+        Parameters
+        ----------
+        env : Env
+            The environment object containing the required environment variables.
+
+        Returns
+        -------
+        Miscellaneous
+            The Miscellaneous object created from the environment variables.
+
+        """
+        api_key = env.str("API_KEY")
+        shop_id = env.str("SHOP_ID")
+        secretkey_1 = env.str("SECRETKEY_1")
+
+        return Miscellaneous(api_key=api_key, shop_id=shop_id, secretkey_1=secretkey_1)
 
 
 @dataclass
@@ -229,5 +263,5 @@ def load_config(path: str = None) -> Config:
         db=DbConfig.from_env(env),
         redis=RedisConfig.from_env(env),
         admin_panel=AdminPanel.from_env(env),
-        misc=Miscellaneous(),
+        misc=Miscellaneous.from_env(env),
     )
