@@ -37,6 +37,10 @@ class UserKeyboards:
             text="🐸 Перевод для SF Log File Analyser 5.3",
             callback_data="buy_SF_Log_File_Analyser_5.3",
         )
+        keyboard.button(
+            text="Показать оферту",
+            url="https://drive.google.com/file/d/1NRTagfkSdYenybyCiOMB-BqgYWCPsblv/view?usp=drive_link",
+        )
         keyboard.button(text="🔙 Назад", callback_data="back_software_chs")
 
         keyboard.adjust(1)
@@ -104,14 +108,18 @@ class UserKeyboards:
 
         return keyboard.as_markup()
 
+    def pay_with_link(link: str):
+        keyboard = InlineKeyboardBuilder()
+
+        keyboard.button(text="💳 Оплатить", url=link)
+        keyboard.button(text="🔙 Назад", callback_data="back_pay_order")
+
+        return keyboard.as_markup()
+
     def payments_keyboard():
         keyboard = InlineKeyboardBuilder()
 
-        keyboard.button(
-            text="💳 Российские карты Visa/MasterCard/МИР", callback_data="card"
-        )
-        keyboard.button(text="💳 Зарубежные карты", callback_data="abroad_card")
-        keyboard.button(text="💳 USDT TRC20", callback_data="usdt_trc20")
+        keyboard.button(text="💳 Cards/Crypto/QIWI", callback_data="pay")
         keyboard.button(text="🔙 Назад", callback_data="back_to_pay")
 
         keyboard.adjust(1)
