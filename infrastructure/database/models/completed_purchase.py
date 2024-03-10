@@ -11,15 +11,13 @@ class CompletedPurchase(Base, TableNameMixin, TimestampMixin):
     Represents a purchase made by a user.
 
     Attributes:
-        purchase_id (int): The unique identifier for the purchase.
+        completed_purchase_id (int): The unique identifier for the purchase.
         user_id (int): The user ID associated with the purchase.
         product_id (int): The product ID associated with the purchase.
-        purchase_date (str): The date the purchase was made.
-        purchase_amount (float): The amount of the purchase.
         purchase_status (str): The status of the purchase.
     """
 
-    completed_purchase_id: Mapped[int] = mapped_column(
+    purchase_id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True, nullable=False
     )
     user_id: Mapped[int] = mapped_column(
