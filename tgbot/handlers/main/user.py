@@ -66,13 +66,6 @@ async def back_to_pay(query: CallbackQuery):
     )
 
 
-@user_router.callback_query(F.data == "pay_order")
-async def choose_payment(query: CallbackQuery):
-    await query.message.edit_text(
-        text="Выберите способ оплаты:", reply_markup=UserKeyboards.payments_keyboard()
-    )
-
-
 @user_router.callback_query(F.data == "pay")
 async def pay_aaio(query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
