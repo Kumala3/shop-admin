@@ -39,28 +39,17 @@ async def pay_order(query: CallbackQuery, state: FSMContext):
     await state.update_data(software=chosen_software)
 
     await query.message.edit_text(
-        text=UserMessages.confirm_payment(chosen_software),
-        reply_markup=UserKeyboards.pay_keyboard(),
-        parse_mode=ParseMode.MARKDOWN,
+        text="Выберите способ оплаты:", reply_markup=UserKeyboards.payments_keyboard()
     )
 
 
 @user_router.callback_query(SoftwareChoice.software, F.data == "back_to_pay")
-async def back_to_pay(query: CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    chosen_software = data.get("software")
+async def back_to_pay(query: CallbackQuery):
 
     await query.message.edit_text(
-        text=UserMessages.confirm_payment(chosen_software),
-        reply_markup=UserKeyboards.pay_keyboard(),
+        text=UserMessages.buy_translate_text(),
+        reply_markup=UserKeyboards.software_choices_kb(),
         parse_mode=ParseMode.MARKDOWN,
-    )
-
-
-@user_router.callback_query(F.data == "pay_order")
-async def choose_payment(query: CallbackQuery):
-    await query.message.edit_text(
-        text="Выберите способ оплаты:", reply_markup=UserKeyboards.payments_keyboard()
     )
 
 
