@@ -65,3 +65,7 @@ cache/
 cert.pem
 cloudflare.crt
 key.pem
+chain.pem
+fullchain.pem
+README
+
