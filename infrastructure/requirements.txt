@@ -11,3 +11,4 @@ aiogram
 redis
 PyJWT
 passlib
+AaioAsync

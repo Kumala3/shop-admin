@@ -5,8 +5,4 @@ betterlogging
 sqlalchemy~=2.0
 asyncpg
 fastapi
-
-# # For enabling api:
-# backoff
-# ujson
-# yarl
+AaioAsync
