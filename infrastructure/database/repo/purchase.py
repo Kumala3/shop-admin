@@ -20,7 +20,6 @@ class PurchaseRepo(BaseRepo):
         Args:
             user_id (int): The ID of the user making the purchase.
             software (str): The name of the software being purchased.
-            payment_method (str): The payment method used for the purchase.
             username (str): The username associated with the purchase.
 
         Returns:
