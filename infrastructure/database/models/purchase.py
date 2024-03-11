@@ -21,5 +21,4 @@ class Purchase(Base, TableNameMixin, TimestampMixin):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.user_id'), nullable=False)
     username: Mapped[Optional[str]] = mapped_column(String)
     software: Mapped[str] = mapped_column(String)
-    payment_method: Mapped[str] = mapped_column(String)
     status: Mapped[str] = mapped_column(String, server_default="Unpaid")

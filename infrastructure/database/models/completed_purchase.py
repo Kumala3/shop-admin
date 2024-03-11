@@ -25,5 +25,4 @@ class CompletedPurchase(Base, TableNameMixin, TimestampMixin):
     )
     username: Mapped[Optional[str]] = mapped_column(String)
     software: Mapped[str] = mapped_column(String)
-    payment_method: Mapped[str] = mapped_column(String)
     status: Mapped[str] = mapped_column(String, server_default="Paid")

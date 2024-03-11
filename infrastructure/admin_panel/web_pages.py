@@ -102,7 +102,6 @@ class Purchases(ModelView, model=Purchase):
         Purchase.user_id: "ID пользователя",
         Purchase.software: "Программа",
         Purchase.created_at: "Дата регистрации сообщения",
-        Purchase.payment_method: "Метод оплаты",
         Purchase.status: "Статус",
         Purchase.username: "Никнейм",
     }
