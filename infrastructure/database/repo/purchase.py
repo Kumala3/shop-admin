@@ -29,13 +29,14 @@ class PurchaseRepo(BaseRepo):
             user_id=user_id,
             software=software,
             username=username,
-        )
+        ).returning(Purchase.purchase_id)
 
-        await self.session.execute(insert_stmt)
+        result = await self.session.execute(insert_stmt)
+        purchase_id = result.fetchone()[0]
 
         await self.session.commit()
 
-        return {"status": "success", "purchase_id": insert_stmt.returning(Purchase.purchase_id)}
+        return {"status": "success", "purchase_id": purchase_id}
 
     async def get_purchase_by_id(self, purchase_id):
         """
