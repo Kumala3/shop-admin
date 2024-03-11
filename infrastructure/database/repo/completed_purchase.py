@@ -3,7 +3,7 @@ from sqlalchemy import select
 
 from .base import BaseRepo
 from infrastructure.database.models.completed_purchase import CompletedPurchase
-
+from infrastructure.database.models.purchase import Purchase
 
 class CompletedPurchaseRepo(BaseRepo):
     """
@@ -14,7 +14,7 @@ class CompletedPurchaseRepo(BaseRepo):
 
     """
 
-    async def create_completed_order(self, completed_purchase: CompletedPurchase):
+    async def create_completed_order(self, purchase: Purchase):
         """
         Create a new completed purchase in the database.
 
@@ -29,10 +29,9 @@ class CompletedPurchaseRepo(BaseRepo):
 
         """
         insert_stmt = insert(CompletedPurchase).values(
-            user_id=completed_purchase.user_id,
-            software=completed_purchase.software,
-            payment_method=completed_purchase.payment_method,
-            username=completed_purchase.username,
+            user_id=purchase.user_id,
+            software=purchase.software,
+            username=purchase.username,
         )
 
         await self.session.execute(insert_stmt)
@@ -40,7 +39,7 @@ class CompletedPurchaseRepo(BaseRepo):
         await self.session.commit()
 
         return {"status": "success"}
-    
+
     async def get_customers_ids(self):
         """
         Get a list of all customer IDs.

@@ -12,7 +12,6 @@ class PurchaseRepo(BaseRepo):
         self,
         user_id: int,
         software: str,
-        payment_method: str,
         username: str,
     ):
         """
@@ -30,7 +29,6 @@ class PurchaseRepo(BaseRepo):
         insert_stmt = insert(Purchase).values(
             user_id=user_id,
             software=software,
-            payment_method=payment_method,
             username=username,
         )
 
@@ -38,7 +36,7 @@ class PurchaseRepo(BaseRepo):
 
         await self.session.commit()
 
-        return {"status": "success"}
+        return {"status": "success", "purchase_id": insert_stmt.returning(Purchase.purchase_id)}
 
     async def get_purchase_by_id(self, purchase_id):
         """
@@ -69,7 +67,7 @@ class PurchaseRepo(BaseRepo):
 
         return result.scalars().all()
 
-    async def delete_purchase_by_id(self, user_id: int):
+    async def delete_purchase_by_id(self, purchase_id: int):
         """
         Delete a purchase by user ID.
 
@@ -80,10 +78,10 @@ class PurchaseRepo(BaseRepo):
             dict: A dictionary containing the status of the operation.
         """
 
-        delete_stmt = Purchase.delete().where(Purchase.user_id == user_id)
+        delete_stmt = Purchase.delete().where(Purchase.purchase_id == purchase_id)
 
         await self.session.execute(delete_stmt)
 
         await self.session.commit()
 
-        return {"status": "puchase was successfully deleted"}
+        return {"status": "purchase was successfully deleted"}
