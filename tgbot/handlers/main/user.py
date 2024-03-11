@@ -59,7 +59,7 @@ async def pay_order(query: CallbackQuery, state: FSMContext):
         amount=105,
         currency="RUB",
         desc=f"Покупка перевода для |{chosen_software}|{query.from_user.id}",
-        order_id=purchase.purchase_id,
+        order_id=purchase["purchase_id"],
     )
 
     await query.message.edit_text(
