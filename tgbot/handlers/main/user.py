@@ -68,8 +68,6 @@ async def pay_order(query: CallbackQuery, state: FSMContext):
         parse_mode=ParseMode.MARKDOWN,
     )
 
-    await state.set_state(SoftwareChoice.payment)
-
 
 @user_router.callback_query(F.data == "back_pay_order")
 async def back_pay_order(query: CallbackQuery):

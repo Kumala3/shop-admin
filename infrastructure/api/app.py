@@ -114,7 +114,7 @@ async def aaio_handler(request: Request, repo: RequestsRepo = Depends(get_repo))
     data = await request.form()
     status = data["status"]
     
-    purchase_id = data["purchase_id"]
+    purchase_id = data["order_id"]
 
     purchase = await repo.purchases.get_purchase_by_id(int(purchase_id))
 
