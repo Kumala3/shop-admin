@@ -1,4 +1,3 @@
-import random
 from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, CallbackQuery
@@ -48,35 +47,21 @@ async def pay_order(query: CallbackQuery, state: FSMContext):
     data = query.data
     chosen_software = " ".join(data.split("_")[1:])
 
-    await state.set_state(SoftwareChoice.software)
-    await state.update_data(software=chosen_software)
-
-    await query.message.edit_text(
-        text="Выберите способ оплаты:", reply_markup=UserKeyboards.payments_keyboard()
-    )
-
-
-@user_router.callback_query(SoftwareChoice.software, F.data == "back_to_pay")
-async def back_to_pay(query: CallbackQuery):
-
-    await query.message.edit_text(
-        text=UserMessages.buy_translate_text(),
-        reply_markup=UserKeyboards.software_choices_kb(),
-        parse_mode=ParseMode.MARKDOWN,
-    )
-
-
-@user_router.callback_query(F.data == "pay")
-async def pay_aaio(query: CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    chosen_software = data.get("software")
+    async with get_session_pool() as session:
+        repo = RequestsRepo(session)
+        purchase = await repo.purchases.create_purchase(
+            user_id=query.from_user.id,
+            software=chosen_software,
+            username=query.from_user.username,
+        )
 
     link = await aaio.generatepaymenturl(
         amount=105,
         currency="RUB",
         desc=f"Покупка перевода для |{chosen_software}|{query.from_user.id}",
-        order_id=str(random.randint(1000000000, 9999999999)),
+        order_id=purchase.purchase_id,
     )
+
     await query.message.edit_text(
         text=UserMessages.payment_aaio(chosen_software),
         reply_markup=UserKeyboards.pay_with_link(link),
