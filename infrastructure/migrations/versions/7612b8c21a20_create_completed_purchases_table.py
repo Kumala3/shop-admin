@@ -26,7 +26,6 @@ def upgrade() -> None:
         sa.Column("user_id", sa.BIGINT(), nullable=False),
         sa.Column("username", sa.String(), nullable=True),
         sa.Column("software", sa.String(), nullable=False),
-        sa.Column("payment_method", sa.String(), nullable=False),
         sa.Column("status", sa.String(), server_default="Paid", nullable=False),
         sa.Column("created_at", sa.DateTime(), server_default=sa.func.now()),
         sa.ForeignKeyConstraint(["user_id"], ["users.user_id"]),
