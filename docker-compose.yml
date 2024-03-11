@@ -72,15 +72,19 @@ services:
      - .:/usr/src/app/api
     # - ./cert.pem:/usr/src/app/api/cert.pem
     # - ./privkey.pem:/usr/src/app/api/key.pem
-   #command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--forwarded-allow-ips", "'*'", "--proxy-headers", "--ssl-keyfile=/nginx/privkey.pem", "--ssl-certfile=/nginx/cert.pem"]
-   command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "80", "--forwarded-allow-ips='*'", "--proxy-headers"]
+    # - /etc/letsencrypt/live/tgbot.abaev.online-0001:/usr/src/app/api/cert
+    # - /etc/letsencrypt/live/tgbot.abaev.online-0001:/usr/src/app/api
+   # command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "80", "--forwarded-allow-ips", "'*'", "--proxy-headers", "--ssl-keyfile=./cert/privkey.pem", "--ssl-certfile=./cert/cert.pem"]
+   command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "443", "--ssl-keyfile=./cert/privkey.pem", "--ssl-certfile=./cert/cert.pem", "--forwarded-allow-ips='*'", "--proxy-headers"]
+   # command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "80", "--forwarded-allow-ips='*'", "--proxy-headers"]
+   #command: [ "uvicorn", "infrastructure.api.app:app", "--host", "0.0.0.0", "--port", "80"]
    restart: always
    env_file:
      - ".env"
    networks:
      - shop_net
    ports:
-     - "80:80"
+     - "443:443"
    logging:
      driver: "json-file"
      options:
