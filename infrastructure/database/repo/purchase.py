@@ -38,7 +38,7 @@ class PurchaseRepo(BaseRepo):
 
         return {"status": "success", "purchase_id": purchase_id}
 
-    async def get_purchase_by_id(self, purchase_id):
+    async def get_purchase_by_id(self, purchase_id: int):
         """
         Get a purchase by ID.
 
@@ -52,7 +52,7 @@ class PurchaseRepo(BaseRepo):
 
         result = await self.session.execute(select_stmt)
 
-        return result.scalar()
+        return result.scalars().one_or_none()
 
     async def get_customers_ids(self):
         """
