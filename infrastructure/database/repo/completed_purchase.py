@@ -1,5 +1,5 @@
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import select
+from sqlalchemy import select, distinct
 
 from .base import BaseRepo
 from infrastructure.database.models.completed_purchase import CompletedPurchase
@@ -47,7 +47,7 @@ class CompletedPurchaseRepo(BaseRepo):
             list: A list of all customer IDs.
 
         """
-        select_stmt = select(CompletedPurchase.user_id)
+        select_stmt = select(distinct(CompletedPurchase.user_id))
 
         result = await self.session.execute(select_stmt)
 
