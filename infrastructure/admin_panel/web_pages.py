@@ -1,11 +1,12 @@
 from fastapi import Request
 from fastapi.responses import RedirectResponse
-from sqladmin import ModelView, BaseView, expose, action
+from sqladmin import ModelView, action
 
 from infrastructure.database.models.users import User
 from infrastructure.database.models.error import Error
 from infrastructure.database.models.feature import Feature
 from infrastructure.database.models.purchase import Purchase
+from infrastructure.database.models.completed_purchase import CompletedPurchase
 
 
 class Users(ModelView, model=User):
@@ -107,11 +108,29 @@ class Purchases(ModelView, model=Purchase):
     }
 
 
-class CustomAdmin(BaseView):
-    name = "Custom Page"
-    icon = ""
+class CompletedPurchases(ModelView, model=CompletedPurchase):
+    @action(
+        name="mailing",
+        label="Рассылка",
+        add_in_list=True,
+    )
+    async def send_mail_to_customers(self, request: Request):
+        return RedirectResponse("/action/enter_message?customers=true")
 
-    @expose("/custom", methods=["GET"])
-    async def test_page(self, request: Request):
-        # return await self.templates.TemplateResponse(request, "custom.html")
-        return {"status": "life - hard, code - easy"}
+    column_list = "__all__"
+    can_create = True
+    can_export = True
+    can_edit = True
+    can_delete = True
+    name_plural = "Оплаченные покупки"
+    export_types = ["csv", "xls"]
+    column_sortable_list = [CompletedPurchase.created_at]
+    column_searchable_list = [CompletedPurchase.purchase_id, CompletedPurchase.software]
+    column_labels = {
+        CompletedPurchase.purchase_id: "ID заказа",
+        CompletedPurchase.user_id: "ID пользователя",
+        CompletedPurchase.software: "Программа",
+        CompletedPurchase.created_at: "Дата регистрации сообщения",
+        CompletedPurchase.status: "Статус",
+        CompletedPurchase.username: "Никнейм",
+    }
