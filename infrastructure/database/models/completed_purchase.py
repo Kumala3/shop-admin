@@ -1,7 +1,7 @@
 from typing import Optional
 
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy import String, ForeignKey, BigInteger
 
 from infrastructure.database.models.base import Base, TimestampMixin
 
@@ -19,10 +19,10 @@ class CompletedPurchase(Base, TimestampMixin):
     __tablename__ = "completed_purchases"
 
     purchase_id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True, nullable=False
+        BigInteger, primary_key=True, autoincrement=True, nullable=False
     )
     user_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("users.user_id"), nullable=False
+        BigInteger, ForeignKey("users.user_id"), nullable=False
     )
     username: Mapped[Optional[str]] = mapped_column(String)
     software: Mapped[str] = mapped_column(String)

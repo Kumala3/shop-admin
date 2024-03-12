@@ -11,7 +11,13 @@ from sqladmin import Admin
 from config import load_config, Config
 
 from infrastructure.database.setup import create_engine
-from infrastructure.admin_panel.web_pages import Users, Features, Errors, Purchases, CompletedPurchases
+from infrastructure.admin_panel.web_pages import (
+    Users,
+    Features,
+    Errors,
+    Purchases,
+    CompletedPurchases,
+)
 from infrastructure.admin_panel.authentication import AdminAuth
 from infrastructure.database.repo.requests import RequestsRepo
 from infrastructure.api.utils import get_repo
@@ -103,18 +109,11 @@ async def start_mailing(
         )
 
 
-@app.get("/test_user_ids")
-async def get_users_ids(repo: RequestsRepo = Depends(get_repo)):
-    users_ids = await repo.purchases.get_customers_ids()
-
-    return {"users_ids": users_ids}
-
-
 @app.post("/payment_aaio")
 async def aaio_handler(request: Request, repo: RequestsRepo = Depends(get_repo)):
     data = await request.form()
     status = data["status"]
-    
+
     purchase_id = data["order_id"]
 
     purchase = await repo.purchases.get_purchase_by_id(int(purchase_id))
