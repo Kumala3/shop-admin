@@ -3,10 +3,10 @@ from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Integer, String, ForeignKey
 
-from infrastructure.database.models.base import Base, TableNameMixin, TimestampMixin
+from infrastructure.database.models.base import Base, TimestampMixin
 
 
-class CompletedPurchase(Base, TableNameMixin, TimestampMixin):
+class CompletedPurchase(Base, TimestampMixin):
     """
     Represents a purchase made by a user.
 
@@ -16,6 +16,7 @@ class CompletedPurchase(Base, TableNameMixin, TimestampMixin):
         product_id (int): The product ID associated with the purchase.
         purchase_status (str): The status of the purchase.
     """
+    __tablename__ = "completed_purchases"
 
     purchase_id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True, nullable=False
