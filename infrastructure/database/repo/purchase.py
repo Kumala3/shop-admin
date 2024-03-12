@@ -78,10 +78,11 @@ class PurchaseRepo(BaseRepo):
             dict: A dictionary containing the status of the operation.
         """
 
-        delete_stmt = Purchase.delete().where(Purchase.purchase_id == purchase_id)
+        purchase_to_delete = await self.session.get(Purchase, purchase_id)
 
-        await self.session.execute(delete_stmt)
-
-        await self.session.commit()
-
-        return {"status": "purchase was successfully deleted"}
+        if purchase_to_delete:
+            await self.session.delete(purchase_to_delete)
+            await self.session.commit()
+            return {"status": "purchase was successfully deleted"}
+        else:
+            return {"status": "purchase not found"}
