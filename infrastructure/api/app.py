@@ -11,7 +11,7 @@ from sqladmin import Admin
 from config import load_config, Config
 
 from infrastructure.database.setup import create_engine
-from infrastructure.admin_panel.web_pages import Users, Features, Errors, Purchases
+from infrastructure.admin_panel.web_pages import Users, Features, Errors, Purchases, CompletedPurchases
 from infrastructure.admin_panel.authentication import AdminAuth
 from infrastructure.database.repo.requests import RequestsRepo
 from infrastructure.api.utils import get_repo
@@ -40,6 +40,7 @@ admin.add_view(Users)
 admin.add_view(Features)
 admin.add_view(Errors)
 admin.add_view(Purchases)
+admin.add_view(CompletedPurchases)
 
 
 log_level = logging.INFO
@@ -74,7 +75,7 @@ async def start_mailing(
 
     status = request.query_params.get("customers")
 
-    customers_ids = await repo.purchases.get_customers_ids()
+    customers_ids = await repo.completed_purchases.get_customers_ids()
 
     users_ids = await repo.users.get_users_ids()
 
