@@ -64,4 +64,12 @@ body {
         margin-left: 50px;
         font-weight: bold;
     }
+
+    .submit-file {
+        display: flex;
+        background-color: #129EDD;
+        justify-content: end;
+        font-weight: bold;
+        margin-top: 100px;
+    }
 }

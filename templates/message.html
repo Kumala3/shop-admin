@@ -9,7 +9,7 @@
 
 <body>
     <div class="container-input">
-        <form action="{{ '/submit_message' + ('?customers=true' if only_customers == 'true' else '')}}" method="post">
+        <form action="{{ '/submit_message' + ('?customers=true' if only_customers == 'true' else '')}}" method="post" enctype="multipart/form-data">
             <p class="info-text">Введите свой текст для рассылки тут:</p>
 
             <textarea class="message-input" name="message" rows="10" maxlength="4096"
@@ -18,6 +18,8 @@
             <p class="char-counter">0/4096</p>
 
             <input class="submit-button" type="submit" value="Submit" />
+            <label for="uploadBtn" class="submit-file">Choose file</label>
+            <input id="uploadBtn" type="file" name="upload" />
         </form>
     </div>
     <script src="/static/js/formValidation.js"></script>
