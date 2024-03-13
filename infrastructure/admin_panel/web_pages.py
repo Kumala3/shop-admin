@@ -7,6 +7,7 @@ from infrastructure.database.models.error import Error
 from infrastructure.database.models.feature import Feature
 from infrastructure.database.models.purchase import Purchase
 from infrastructure.database.models.completed_purchase import CompletedPurchase
+from infrastructure.admin_panel.utils import format_created_at
 
 
 class Users(ModelView, model=User):
@@ -24,6 +25,7 @@ class Users(ModelView, model=User):
     can_edit = True
     can_delete = True
     name_plural = "Пользователи"
+    column_formatters = {"created_at": format_created_at}
     column_sortable_list = [User.created_at]
     column_searchable_list = [User.user_id]
     column_default_sort = (User.created_at, True)
@@ -48,6 +50,7 @@ class Features(ModelView, model=Feature):
     can_delete = True
     name_plural = "Пожелания"
     export_types = ["csv", "xls"]
+    column_formatters = {"created_at": format_created_at}
     column_sortable_list = [Feature.created_at]
     column_searchable_list = [Feature.feature_id, Feature.software]
     column_default_sort = (Feature.created_at, True)
@@ -71,6 +74,7 @@ class Errors(ModelView, model=Error):
     can_delete = True
     name_plural = "Ошибки"
     export_types = ["csv", "xls"]
+    column_formatters = {"created_at": format_created_at}
     column_sortable_list = [Error.created_at]
     column_searchable_list = [Error.error_id, Error.software]
     column_default_sort = (Error.created_at, True)
@@ -102,6 +106,7 @@ class Purchases(ModelView, model=Purchase):
     can_delete = True
     name_plural = "Покупки"
     export_types = ["csv", "xls"]
+    column_formatters = {"created_at": format_created_at}
     column_sortable_list = [Purchase.created_at]
     column_searchable_list = [Purchase.purchase_id, Purchase.software]
     column_default_sort = (Purchase.created_at, True)
@@ -125,6 +130,7 @@ class CompletedPurchases(ModelView, model=CompletedPurchase):
     async def send_mail_to_customers(self, request: Request):
         return RedirectResponse("/action/enter_message?customers=true")
 
+    column_formatters = {"created_at": format_created_at}
     column_list = "__all__"
     can_create = True
     can_export = True
