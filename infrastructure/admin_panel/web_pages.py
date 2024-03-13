@@ -26,7 +26,9 @@ class Users(ModelView, model=User):
     name_plural = "Пользователи"
     column_sortable_list = [User.created_at]
     column_searchable_list = [User.user_id]
+    column_default_sort = (User.created_at, True)
     export_types = ["csv", "xls"]
+    page_size = 25
     column_labels = {
         User.created_at: "Дата регистрации",
         User.user_id: "ID пользователя",
@@ -48,6 +50,8 @@ class Features(ModelView, model=Feature):
     export_types = ["csv", "xls"]
     column_sortable_list = [Feature.created_at]
     column_searchable_list = [Feature.feature_id, Feature.software]
+    column_default_sort = (Feature.created_at, True)
+    page_size = 25
     column_labels = {
         Feature.feature_id: "ID пожелания",
         Feature.user_id: "ID пользователя",
@@ -69,6 +73,8 @@ class Errors(ModelView, model=Error):
     export_types = ["csv", "xls"]
     column_sortable_list = [Error.created_at]
     column_searchable_list = [Error.error_id, Error.software]
+    column_default_sort = (Error.created_at, True)
+    page_size = 25
     column_labels = {
         Error.error_id: "ID пожелания",
         Error.user_id: "ID пользователя",
@@ -98,6 +104,8 @@ class Purchases(ModelView, model=Purchase):
     export_types = ["csv", "xls"]
     column_sortable_list = [Purchase.created_at]
     column_searchable_list = [Purchase.purchase_id, Purchase.software]
+    column_default_sort = (Purchase.created_at, True)
+    page_size = 25
     column_labels = {
         Purchase.purchase_id: "ID заказа",
         Purchase.user_id: "ID пользователя",
@@ -126,6 +134,8 @@ class CompletedPurchases(ModelView, model=CompletedPurchase):
     export_types = ["csv", "xls"]
     column_sortable_list = [CompletedPurchase.created_at]
     column_searchable_list = [CompletedPurchase.purchase_id, CompletedPurchase.software]
+    column_default_sort = (CompletedPurchase.created_at, True)
+    page_size = 25
     column_labels = {
         CompletedPurchase.purchase_id: "ID заказа",
         CompletedPurchase.user_id: "ID пользователя",
