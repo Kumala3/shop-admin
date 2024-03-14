@@ -1,7 +1,10 @@
 import logging
 import betterlogging as bl
+from typing import Optional
+import os
+import shutil
 
-from fastapi import FastAPI, Request, Depends, UploadFile, File
+from fastapi import FastAPI, Request, Depends, UploadFile
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -20,10 +23,9 @@ from infrastructure.admin_panel.web_pages import (
 )
 from infrastructure.admin_panel.authentication import AdminAuth
 from infrastructure.database.repo.requests import RequestsRepo
-from infrastructure.api.utils import get_repo, upload_file_to_temp_storage
+from infrastructure.api.utils import get_repo, get_file_url
 from bot import bot
 from aiogram.types import URLInputFile
-import shutil
 
 config: Config = load_config(".env")
 engine = create_engine(config.db)
@@ -75,8 +77,8 @@ async def enter_message(request: Request):
 async def start_mailing(
     request: Request,
     background_tasks: BackgroundTasks,
+    upload_file: Optional[UploadFile] = None,
     repo: RequestsRepo = Depends(get_repo),
-    upload_file: UploadFile = File(None),
 ):
     raw_text = await request.form()
     formatted_message = str(raw_text["message"].strip())
@@ -87,36 +89,52 @@ async def start_mailing(
 
     users_ids = await repo.users.get_users_ids()
 
-    log.info(f"There was file: {upload_file.filename}")
-
     if upload_file is not None:
-        with open(f"temp_{upload_file.filename}", "wb") as buffer:
-            shutil.copyfileobj(upload_file.file, buffer)
+        temp_file_path = f"temp_{upload_file.filename}"
 
-        file_url = await upload_file_to_temp_storage(f"{upload_file.filename}")
-    
-    # async def send_messages(message: str, users_ids: list):
-    #     for user_id in users_ids:
-    #         try:
-    #             await bot.send_message(
-    #                 user_id, text=message, disable_web_page_preview=True
-    #             )
-    #         except Exception as e:
-    #             log.info(f"Error sending message to user {user_id}: {e}")
-    #     log.info(f"Mailing was successful for {len(users_ids)} users")
+        with open(temp_file_path, "wb") as temp_file:
+            shutil.copyfileobj(upload_file.file, temp_file)
 
-    # if status == "true":
-    #     background_tasks.add_task(send_messages, formatted_message, customers_ids)
-    #     return templates.TemplateResponse(
-    #         "success_mailing.html",
-    #         {"request": request, "count_users": len(customers_ids)},
-    #     )
-    # else:
-    #     background_tasks.add_task(send_messages, formatted_message, users_ids)
-    #     return templates.TemplateResponse(
-    #         "success_mailing.html",
-    #         {"request": request, "count_users": len(users_ids)},
-    #     )
+        try:
+            file_url = await get_file_url(temp_file_path)
+        except Exception as e:
+            log.info(f"Failed to get file URL: {e}")
+        finally:
+            if os.path.exists(temp_file_path):
+                os.remove(temp_file_path)
+
+    async def send_messages(message: str, users_ids: list):
+        for user_id in users_ids:
+            try:
+                await bot.send_message(
+                    user_id, text=message, disable_web_page_preview=True
+                )
+            except Exception as e:
+                log.info(f"Error sending message to user {user_id}: {e}")
+        log.info(f"Mailing was successful for {len(users_ids)} users")
+
+    async def send_file(user_ids: list):
+        for user_id in user_ids:
+            try:
+                await bot.send_document(user_id, document=file_url)
+            except Exception as e:
+                log.info(f"Error sending file to user {user_id}: {e}")
+        log.info(f"File was sent to {len(user_ids)} users")
+
+    if status == "true":
+        background_tasks.add_task(send_messages, formatted_message, customers_ids)
+        background_tasks.add_task(send_file, customers_ids)
+        return templates.TemplateResponse(
+            "success_mailing.html",
+            {"request": request, "count_users": len(customers_ids)},
+        )
+    else:
+        background_tasks.add_task(send_messages, formatted_message, users_ids)
+        background_tasks.add_task(send_file, users_ids)
+        return templates.TemplateResponse(
+            "success_mailing.html",
+            {"request": request, "count_users": len(users_ids)},
+        )
 
 
 @app.post("/payment_aaio")
