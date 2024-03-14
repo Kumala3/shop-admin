@@ -67,9 +67,8 @@ body {
 
     .submit-file {
         display: flex;
-        background-color: #129EDD;
+        background-color: red;
         justify-content: end;
         font-weight: bold;
-        margin-top: 100px;
     }
 }
