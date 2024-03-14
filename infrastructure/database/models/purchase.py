@@ -12,11 +12,11 @@ class Purchase(Base, TableNameMixin, TimestampMixin):
     Attributes:
         purchase_id (int): The unique identifier for the purchase.
         user_id (int): The user ID associated with the purchase.
-        product_id (int): The product ID associated with the purchase.
-        purchase_date (str): The date the purchase was made.
-        purchase_amount (float): The amount of the purchase.
-        purchase_status (str): The status of the purchase.
+        username (str, optional): The username associated with the purchase.
+        software (str): The software associated with the purchase.
+        status (str): The status of the purchase. Defaults to "Unpaid".
     """
+
     purchase_id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, nullable=False)
     user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.user_id'), nullable=False)
     username: Mapped[Optional[str]] = mapped_column(String)

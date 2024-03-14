@@ -17,6 +17,7 @@ class CompletedPurchase(Base, TimestampMixin):
         software (str): The software associated with the purchase.
         status (str): The status of the purchase. Defaults to "Paid".
     """
+
     __tablename__ = "completed_purchases"
 
     purchase_id: Mapped[int] = mapped_column(
