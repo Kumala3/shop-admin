@@ -13,3 +13,4 @@ PyJWT
 passlib
 AaioAsync
 pytz
+aiohttp
