@@ -30,7 +30,7 @@ config: Config = load_config(".env")
 engine = create_engine(config.db)
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 
 authentication_backend = AdminAuth(
@@ -55,7 +55,7 @@ log_level = logging.INFO
 bl.basic_colorized_config(level=log_level)
 log = logging.getLogger(__name__)
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="frontend/templates")
 
 
 @app.get("/api")
