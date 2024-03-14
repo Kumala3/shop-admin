@@ -70,3 +70,4 @@ fullchain.pem
 README
 privkey.pem
 
+node_modules/
