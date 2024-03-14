@@ -89,7 +89,7 @@ async def start_mailing(
 
     users_ids = await repo.users.get_users_ids()
 
-    if upload_file is not None:
+    if upload_file.filename != "":
         temp_file_path = f"temp_{upload_file.filename}"
 
         with open(temp_file_path, "wb") as temp_file:
@@ -103,7 +103,7 @@ async def start_mailing(
             if os.path.exists(temp_file_path):
                 os.remove(temp_file_path)
 
-    async def send_messages(message: str, users_ids: list):
+    async def send_message(message: str, users_ids: list):
         for user_id in users_ids:
             try:
                 await bot.send_message(
@@ -113,24 +113,28 @@ async def start_mailing(
                 log.info(f"Error sending message to user {user_id}: {e}")
         log.info(f"Mailing was successful for {len(users_ids)} users")
 
-    async def send_file(user_ids: list):
+    async def send_file(user_ids: list, message: str):
         for user_id in user_ids:
             try:
-                await bot.send_document(user_id, document=file_url)
+                await bot.send_document(user_id, document=file_url, caption=message)
+                log.info(f"File was sent to {len(user_ids)} users")
             except Exception as e:
                 log.info(f"Error sending file to user {user_id}: {e}")
-        log.info(f"File was sent to {len(user_ids)} users")
 
     if status == "true":
-        background_tasks.add_task(send_messages, formatted_message, customers_ids)
-        background_tasks.add_task(send_file, customers_ids)
+        if upload_file.filename == "":
+            background_tasks.add_task(send_message, formatted_message, customers_ids)
+        else:
+            background_tasks.add_task(send_file, customers_ids, formatted_message)
         return templates.TemplateResponse(
             "success_mailing.html",
             {"request": request, "count_users": len(customers_ids)},
         )
     else:
-        background_tasks.add_task(send_messages, formatted_message, users_ids)
-        background_tasks.add_task(send_file, users_ids)
+        if upload_file.filename == "":
+            background_tasks.add_task(send_message, formatted_message, users_ids)
+        else:
+            background_tasks.add_task(send_file, users_ids, formatted_message)
         return templates.TemplateResponse(
             "success_mailing.html",
             {"request": request, "count_users": len(users_ids)},
