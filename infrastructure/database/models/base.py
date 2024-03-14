@@ -15,11 +15,25 @@ class Base(DeclarativeBase):
 
 
 class TableNameMixin:
+    """
+    Mixin class that provides a default implementation for generating the table name based on the class name.
+    """
+
     @declared_attr.directive
     def __tablename__(cls) -> str:
+        """
+        Returns the table name for the class.
+
+        Returns:
+            str: The table name.
+        """
         return cls.__name__.lower() + "s"
 
 
 class TimestampMixin:
+    """
+    A mixin class that provides timestamp functionality for database models.
+    """
+
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP, server_default=func.now())

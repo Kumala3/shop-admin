@@ -8,6 +8,10 @@ from infrastructure.database.repo.base import BaseRepo
 
 
 class UserRepo(BaseRepo):
+    """
+    Repository class for managing user data in the database.
+    """
+
     async def get_or_create_user(
         self,
         user_id: int,
@@ -51,6 +55,11 @@ class UserRepo(BaseRepo):
         return result.scalar_one()
 
     async def get_all_users(self):
+        """
+        Retrieves all users from the database.
+
+        :return: List of user objects.
+        """
         select_stmt = select(User)
 
         result = await self.session.execute(select_stmt)
@@ -58,6 +67,11 @@ class UserRepo(BaseRepo):
         return result.scalars().all()
 
     async def get_users_ids(self):
+        """
+        Retrieves the IDs of all users from the database.
+
+        :return: List of user IDs.
+        """
         select_stmt = select(User.user_id)
 
         result = await self.session.execute(select_stmt)

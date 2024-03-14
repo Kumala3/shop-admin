@@ -8,13 +8,14 @@ from infrastructure.database.models.base import Base, TimestampMixin
 
 class CompletedPurchase(Base, TimestampMixin):
     """
-    Represents a purchase made by a user.
+    Represents a completed (paid) purchase made by a user.
 
     Attributes:
         completed_purchase_id (int): The unique identifier for the purchase.
         user_id (int): The user ID associated with the purchase.
-        product_id (int): The product ID associated with the purchase.
-        purchase_status (str): The status of the purchase.
+        username (str, optional): The username associated with the purchase.
+        software (str): The software associated with the purchase.
+        status (str): The status of the purchase. Defaults to "Paid".
     """
     __tablename__ = "completed_purchases"
 
