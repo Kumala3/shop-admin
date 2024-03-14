@@ -1,7 +1,6 @@
 import logging
 import betterlogging as bl
 from typing import Optional
-import os
 import shutil
 
 from fastapi import FastAPI, Request, Depends, UploadFile
@@ -23,7 +22,7 @@ from infrastructure.admin_panel.web_pages import (
 )
 from infrastructure.admin_panel.authentication import AdminAuth
 from infrastructure.database.repo.requests import RequestsRepo
-from infrastructure.api.utils import get_repo, get_file_url
+from infrastructure.api.utils import get_repo, send_file, send_message
 from bot import bot
 from aiogram.types import URLInputFile
 
@@ -89,56 +88,56 @@ async def start_mailing(
 
     users_ids = await repo.users.get_users_ids()
 
+    # Check if the admin uploaded any file
     if upload_file.filename != "":
         temp_file_path = f"temp_{upload_file.filename}"
 
-        with open(temp_file_path, "wb") as temp_file:
-            shutil.copyfileobj(upload_file.file, temp_file)
-
         try:
-            file_url = await get_file_url(temp_file_path)
+            # Download the file to the file system
+            with open(temp_file_path, "wb") as temp_file:
+                shutil.copyfileobj(upload_file.file, temp_file)
         except Exception as e:
-            log.info(f"Failed to get file URL: {e}")
-        finally:
-            if os.path.exists(temp_file_path):
-                os.remove(temp_file_path)
+            log.info(f"There was an error during downloading file: {e}")
 
-    async def send_message(message: str, users_ids: list):
-        for user_id in users_ids:
-            try:
-                await bot.send_message(
-                    user_id, text=message, disable_web_page_preview=True
-                )
-            except Exception as e:
-                log.info(f"Error sending message to user {user_id}: {e}")
-        log.info(f"Mailing was successful for {len(users_ids)} users")
-
-    async def send_file(user_ids: list, message: str):
-        for user_id in user_ids:
-            try:
-                await bot.send_document(user_id, document=file_url, caption=message)
-                log.info(f"File was sent to {len(user_ids)} users")
-            except Exception as e:
-                log.info(f"Error sending file to user {user_id}: {e}")
-
+    # If the admin wants to send a message to customers
     if status == "true":
-        if upload_file.filename == "":
-            background_tasks.add_task(send_message, formatted_message, customers_ids)
-        else:
-            background_tasks.add_task(send_file, customers_ids, formatted_message)
-        return templates.TemplateResponse(
-            "success_mailing.html",
-            {"request": request, "count_users": len(customers_ids)},
-        )
+        try:
+            # If there's no file, send simple message without any attachments
+            if upload_file.filename == "":
+                background_tasks.add_task(
+                    send_message, formatted_message, customers_ids
+                )
+            else:
+                background_tasks.add_task(
+                    send_file, customers_ids, formatted_message, temp_file_path
+                )
+            return templates.TemplateResponse(
+                "success_mailing.html",
+                {"request": request, "count_users": len(customers_ids)},
+            )
+        except Exception as e:
+            log.info(f"Error sending message to customers: {e}")
+            return JSONResponse(
+                status_code=500, content={"error": "Internal Server Error"}
+            )
+    # If the admin wants to send a message to all users
     else:
-        if upload_file.filename == "":
-            background_tasks.add_task(send_message, formatted_message, users_ids)
-        else:
-            background_tasks.add_task(send_file, users_ids, formatted_message)
-        return templates.TemplateResponse(
-            "success_mailing.html",
-            {"request": request, "count_users": len(users_ids)},
-        )
+        try:
+            if upload_file.filename == "":
+                background_tasks.add_task(send_message, formatted_message, users_ids)
+            else:
+                background_tasks.add_task(
+                    send_file, users_ids, formatted_message, temp_file_path
+                )
+            return templates.TemplateResponse(
+                "success_mailing.html",
+                {"request": request, "count_users": len(users_ids)},
+            )
+        except Exception as e:
+            log.info(f"There was an error during sending message or file: {e}")
+            return JSONResponse(
+                status_code=500, content={"error": "Internal Server Error"}
+            )
 
 
 @app.post("/payment_aaio")
