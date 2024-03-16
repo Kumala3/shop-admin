@@ -48,7 +48,7 @@ body {
         align-items: center;
         width: 100px;
         height: 50px;
-        margin-left: 180px;
+        margin-left: 130px;
         margin-top: -10px;
         background-color: aqua;
         border-radius: 10px;
@@ -67,8 +67,24 @@ body {
 
     .submit-file {
         display: flex;
-        background-color: red;
-        justify-content: end;
-        font-weight: bold;
+        padding: 3px;
+        font-weight: semibold;
+        background-color: aqua;
+        height: 40px;
+        width: 80px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        border: 2px solid #545454;
+        margin-left: 245px;
+        margin-top: -50px;
     }
+
+    .submit-file:hover {
+        box-shadow: 0 0 15px #129EDD;
+    }
+
+    .input-btn {
+        display: none;
+     }
 }
