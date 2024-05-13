@@ -7,7 +7,7 @@
     2. Run project with next command: `docker-compose up --build`
     3. Run migrations with next command:
 
-        `docker-compose exec api alembic upgrade head`
+        `docker compose exec api alembic upgrade head`
 
 3. **Without Docker:**
     1. Create [venv](https://docs.python.org/3/library/venv.html)
